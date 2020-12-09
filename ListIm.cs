@@ -16,34 +16,6 @@ namespace ListIm
             Array1 = new T[_size];
         }
 
-        /*public void Append(T addition)
-        {
-            if (_currentIndex == _size - 1)
-            {
-                _size *= 2;
-                T[] Array2 = new T[_size];
-                _currentIndex = 0;
-                foreach (T value in Array1)
-                {
-                    if (value != null)
-                    {
-                        Array2[_currentIndex] = value;
-                        _currentIndex++;
-                    }
-                   
-                }
-                Array2[_currentIndex] = addition;
-                _currentIndex++;
-                Array1 = Array2;
-            }
-            else
-            {
-                Array1[_currentIndex] = addition;
-                _currentIndex++;
-            }
-                
-            
-        }*/
         public void Append(T addition)
         {
             if (_currentIndex == _size - 1)
@@ -92,9 +64,14 @@ namespace ListIm
                 {
                     Array2[_currentIndex] = value;
                     _currentIndex++;
+                        
                 }
             }
            
+        }
+        public void Pop(T obj)
+        {
+            Pop((int)IndexOf(obj));
         }
         public void Print()
         {
@@ -123,56 +100,39 @@ namespace ListIm
             }
             
         }
-        /*public void Sorter()
+        public void Sorter()
         {
-            T[] Array2 = new T[_size];
-            for (int si = 0; _currentIndex - 1 > si; si++)
+            T[] Array2 = Array1;
+            int[] banned = new int[_size];
+            int bannedAmount = 0;
+            for (int si = 0; _currentIndex - 1 >= si; si++)
             {
-                for (int fi = 0; _currentIndex - 1 > fi; fi++)
+                int fi = 0;
+                for (fi = 0; _currentIndex - 1 >= fi; fi++)
                 {
-                    if (Array1[fi] != null)
+                    bool notBanned = true;
+                    foreach (int index in banned)
                     {
-                        if (Array1[fi].CompareTo(Array2[si]) > 0)
+                        if (index == fi)
+                        {
+                            notBanned = false;
+                            break;
+                        }
+                        notBanned = true;
+                    }
+                    if (Array1[fi] != null && notBanned)
+                    {
+                        if (Array1[fi].CompareTo(Array2[si]) <= 0)
                         {
                             Array2[si] = Array1[fi];
-                            break;
+                            banned[bannedAmount] = fi;
+                            bannedAmount++;
                         }
                     }
                     
                 }
             }
             Array1 = Array2;   
-        }*/
-        public void Sorter()
-        {
-            T[] Array2 = new T[_size];
-            int si = 0;
-            
-            bool check = false;
-            while (si < _currentIndex)
-            {
-                int fi = 0;
-                while ( _currentIndex - 1 > fi)
-                {
-                    check = true;
-                    if (Array1[fi] != null)
-                    {
-                        if (Array1[fi].CompareTo(Array2[si]) > 0)
-                        {
-                            Array2[si] = Array1[fi];
-                            fi = _currentIndex;
-                            si++;
-                            check = false;
-                        }
-                    }
-                }
-            if (check)
-                {
-                    check = false;
-                    si++;
-                }
-            }
-            Array1 = Array2;
         }
         public int? IndexOf(T obj)
         {
@@ -194,8 +154,7 @@ namespace ListIm
 
         public IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return Array1.GetEnumerator();
         }
     }
 }
-
