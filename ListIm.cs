@@ -105,32 +105,48 @@ namespace ListIm
             T[] Array2 = Array1;
             int[] banned = new int[_size];
             int bannedAmount = 0;
-            for (int si = 0; _currentIndex - 1 >= si; si++)
+            bool zeroUsed = false;
+            for (int si = 0; _currentIndex - 1 > si; si++)
             {
                 int fi = 0;
-                for (fi = 0; _currentIndex - 1 >= fi; fi++)
+                for (fi = 0; _currentIndex - 1 > fi; fi++)
                 {
                     bool notBanned = true;
                     foreach (int index in banned)
                     {
-                        if (index == fi)
+                        
+                        if (index == fi && fi != 0 || !zeroUsed)
                         {
                             notBanned = false;
+                            if (fi == 0)
+                            {
+                                zeroUsed = true;
+                            }
                             break;
                         }
-                        notBanned = true;
+                        
                     }
-                    if (Array1[fi] != null && notBanned)
+                    if (Array1[fi] != null && notBanned || fi == 0 && !zeroUsed)
                     {
-                        if (Array1[fi].CompareTo(Array2[si]) <= 0)
+                        if (Array1[fi].CompareTo(Array2[si]) < 0)
                         {
                             Array2[si] = Array1[fi];
-                            banned[bannedAmount] = fi;
-                            bannedAmount++;
+                            
                         }
                     }
                     
                 }
+                if (fi == 0)
+                {
+                    zeroUsed = true;
+                }
+                if (!zeroUsed || fi != 0)
+                {
+                    banned[bannedAmount] = fi;
+                    Console.WriteLine(banned[bannedAmount]);
+                    bannedAmount++;
+                }
+                
             }
             Array1 = Array2;   
         }
@@ -158,3 +174,4 @@ namespace ListIm
         }
     }
 }
+
