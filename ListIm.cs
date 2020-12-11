@@ -104,51 +104,86 @@ namespace ListIm
         {
             T[] Array2 = Array1;
             int[] banned = new int[_size];
+            int[] bannedSi = new int[_size];
+            for (int i = 0; i < bannedSi.Length; i++)
+            {
+                bannedSi[i] = -1;
+            }
             int bannedAmount = 0;
             bool zeroUsed = false;
             for (int si = 0; _currentIndex - 1 > si; si++)
             {
+                bool bannedVal = false;
                 int fi = 0;
                 for (fi = 0; _currentIndex - 1 > fi; fi++)
                 {
-                    bool notBanned = true;
+                    bannedVal = false;
                     foreach (int index in banned)
                     {
                         
-                        if (index == fi && fi != 0 || !zeroUsed)
+                        if (index == fi && fi != 0 || fi == 0 && zeroUsed)
                         {
-                            notBanned = false;
-                            if (fi == 0)
-                            {
-                                zeroUsed = true;
-                            }
+                            bannedVal = true;
+                            
                             break;
                         }
                         
                     }
-                    if (Array1[fi] != null && notBanned || fi == 0 && !zeroUsed)
+                    bool isBannedSi = false;
+                    foreach (int index in bannedSi)
                     {
-                        if (Array1[fi].CompareTo(Array2[si]) < 0)
+
+                        if (index == si)
+                        {
+                            isBannedSi = true;
+
+                            break;
+                        }
+
+                    }
+                    if (Array1[fi] != null && !bannedVal)
+                    {
+                        if (Array1[fi].CompareTo(Array2[si]) < 0 || isBannedSi)
                         {
                             Array2[si] = Array1[fi];
-                            
+                            if (isBannedSi)
+                            {
+                                for (int i = 0; i < bannedSi.Length; i++)
+                                {
+
+                                    if (bannedSi[i] == si)
+                                    {
+                                        bannedSi[i] = -1;
+                                    }
+
+                                }
+                            }
                         }
                     }
                     
                 }
-                if (fi == 0)
-                {
-                    zeroUsed = true;
-                }
-                if (!zeroUsed || fi != 0)
+                if (!bannedVal)
                 {
                     banned[bannedAmount] = fi;
-                    Console.WriteLine(banned[bannedAmount]);
+                    
                     bannedAmount++;
+                    if (fi == 0)
+                    {
+                        zeroUsed = true;
+                    }
                 }
                 
+                
             }
+            IntArray(banned, bannedAmount);
             Array1 = Array2;   
+        }
+        private void IntArray(int[] numbs, int len)
+        {
+            for ( int i = 0; i < len; i++)
+            {
+                Console.WriteLine(numbs[i]);
+            }
         }
         public int? IndexOf(T obj)
         {
@@ -172,6 +207,9 @@ namespace ListIm
         {
             return Array1.GetEnumerator();
         }
+        public void Test()
+        {
+            Console.WriteLine("b".CompareTo("a"));
+        }
     }
 }
-
