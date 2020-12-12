@@ -36,7 +36,14 @@ namespace ListIm
                 _currentIndex++;
             }
         }
-        
+        public void MultiAppend(T[] additions)
+        {
+            foreach (T addition in additions)
+            {
+                Append(addition);
+            }
+        }
+
         public void Pop(int ind = -1)
 
         {
@@ -54,43 +61,109 @@ namespace ListIm
                 Array1[i] = Array1[i + 1];
             }
             _currentIndex--;
-            
+
             if (_currentIndex <= Array1.Length / 4)
             {
-                _size /= 2;
-                T[] Array2 = new T[_size];
-                _currentIndex = 0;
-                foreach (T value in Array1)
-                {
-                    Array2[_currentIndex] = value;
-                    _currentIndex++;
-                        
-                }
+                Reduce();
             }
-           
         }
         public void Pop(T obj)
         {
             Pop((int)IndexOf(obj));
         }
+        public void PopAll(T obj, int amount = -1)
+        {
+            int count = 0;
+            for (int i = 0; i < _currentIndex; i++)
+            {
+                if (Array1[i].CompareTo(obj) == 0)
+                {
+                    if (count == amount)
+                    {
+                        Console.WriteLine($"{count} element eliminated :>");
+                        return;
+                    }
+                    Pop(Array1[i]);
+                    count++;
+                }
+            }
+            Console.WriteLine($"{count} element eliminated :>");
+        }
+        private void Reduce()
+        {
+            _size /= 2;
+            T[] Array2 = new T[_size];
+            _currentIndex = 0;
+            foreach (T value in Array1)
+            {
+                Array2[_currentIndex] = value;
+                _currentIndex++;
+
+            }
+        }
+
         public void Print()
         {
             string result = "";
-            
+
             for (int i = 0; i < _currentIndex; i++)
             {
                 if (Array1[i] != null)
                 {
                     result += Array1[i].ToString() + " ";
                 }
-                
+
             }
             result += "\n";
             Console.Write(result.Replace("  ", " "));
         }
+        public void Print(int ind)
+        {
+            Console.WriteLine(Get(ind));
+        }
+        public void Print(int firstVal, int secondVal)
+        {
+            string result = "";
+            if (firstVal < secondVal)
+            {
+
+                bool compatable = firstVal > 0 && firstVal < _currentIndex && secondVal < _currentIndex;
+                if (compatable)
+                {
+                    while (firstVal <= secondVal)
+                    {
+                        result += Array1[firstVal] + " ";
+                        firstVal++;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Index out of range!");
+                    return;
+                }
+            }
+            else
+            {
+                bool compatable = secondVal > 0 && secondVal < _currentIndex && firstVal < _currentIndex;
+                if (compatable)
+                {
+                    while (secondVal <= firstVal)
+                    {
+                        result += Array1[secondVal] + " ";
+                        secondVal++;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Index out of range!");
+                    return;
+                }
+            }
+            Console.WriteLine(result);
+        }
         public T Get(int ind)
         {
-            if (ind < _currentIndex) 
+            if (ind < _currentIndex)
             {
                 return Array1[ind];
             }
@@ -98,93 +171,49 @@ namespace ListIm
             {
                 return Array1[_currentIndex - 1];
             }
-            
+
         }
-        public void Sorter()
+
+        public void Sorter(bool descend = false)
         {
-            T[] Array2 = Array1;
-            int[] banned = new int[_size];
-            int[] bannedSi = new int[_size];
-            for (int i = 0; i < bannedSi.Length; i++)
+            T[] sorted = Array1;
+            T temp;
+            if (descend)
             {
-                bannedSi[i] = -1;
-            }
-            int bannedAmount = 0;
-            bool zeroUsed = false;
-            for (int si = 0; _currentIndex - 1 > si; si++)
-            {
-                bool bannedVal = false;
-                int fi = 0;
-                for (fi = 0; _currentIndex - 1 > fi; fi++)
+
+
+
+
+                for (int i = 0; i < _currentIndex; i++)
                 {
-                    bannedVal = false;
-                    foreach (int index in banned)
+                    for (int j = 0; j < _currentIndex; j++)
                     {
-                        
-                        if (index == fi && fi != 0 || fi == 0 && zeroUsed)
+                        if (sorted[i].CompareTo(sorted[j]) == 1)
                         {
-                            bannedVal = true;
-                            
-                            break;
+                            temp = sorted[i];
+                            sorted[i] = sorted[j];
+                            sorted[j] = temp;
                         }
-                        
-                    }
-                    bool isBannedSi = false;
-                    foreach (int index in bannedSi)
-                    {
-
-                        if (index == si)
-                        {
-                            isBannedSi = true;
-
-                            break;
-                        }
-
-                    }
-                    if (Array1[fi] != null && !bannedVal)
-                    {
-                        if (Array1[fi].CompareTo(Array2[si]) < 0 || isBannedSi)
-                        {
-                            Array2[si] = Array1[fi];
-                            if (isBannedSi)
-                            {
-                                for (int i = 0; i < bannedSi.Length; i++)
-                                {
-
-                                    if (bannedSi[i] == si)
-                                    {
-                                        bannedSi[i] = -1;
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-                if (!bannedVal)
-                {
-                    banned[bannedAmount] = fi;
-                    
-                    bannedAmount++;
-                    if (fi == 0)
-                    {
-                        zeroUsed = true;
                     }
                 }
-                
-                
             }
-            IntArray(banned, bannedAmount);
-            Array1 = Array2;   
-        }
-        private void IntArray(int[] numbs, int len)
-        {
-            for ( int i = 0; i < len; i++)
+            else
             {
-                Console.WriteLine(numbs[i]);
+                for (int i = 0; i < _currentIndex; i++)
+                {
+                    for (int j = 0; j < _currentIndex; j++)
+                    {
+                        if (sorted[i].CompareTo(sorted[j]) == -1)
+                        {
+                            temp = sorted[i];
+                            sorted[i] = sorted[j];
+                            sorted[j] = temp;
+                        }
+                    }
+                }
             }
         }
+
         public int? IndexOf(T obj)
         {
             int i = 0;
@@ -205,11 +234,7 @@ namespace ListIm
 
         public IEnumerator GetEnumerator()
         {
-            return Array1.GetEnumerator();
-        }
-        public void Test()
-        {
-            Console.WriteLine("b".CompareTo("a"));
+            return (IEnumerator)this;
         }
     }
 }
